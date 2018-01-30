@@ -7,6 +7,7 @@ function vizzy() {
     let cssString;
     fs.readFile(__dirname + '/demo/main.css', 'utf8', function (err, data) {
         cssString = data;
+        console.log('Vizzy is watching for changes!')
     });
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
