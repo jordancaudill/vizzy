@@ -20,7 +20,7 @@ function vizzy() {
         fs.writeFile(__dirname + '/demo/main.css', cssString, function (err) {
             if (!err) {
                 console.log('Vizzy CSS Updated!')
-                res.status(200).send();
+                res.status(200).send({ filePath: 'main.css' });
             } else {
                 throw err;
             }

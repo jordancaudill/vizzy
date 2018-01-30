@@ -19,7 +19,6 @@ function vizzyContextMenu(ev) {
     return false;
 };
 
-
 function openVizzy(el) {
     let css = getCSS(el);
     let computedStyles = window.getComputedStyle(el);
@@ -41,22 +40,25 @@ function openVizzy(el) {
         closeButton.addEventListener('mousedown', closeVizzy);
     }
     let inputs = document.querySelectorAll('.vizzy-input');
+    let typing = false;
     inputs.forEach(function (input) {
         input.addEventListener('keyup', function (ev) {
-            let property = ev.target.getAttribute('property');
-            let value = ev.target.value;
-            let selector = ev.target.getAttribute('selector');
-            let elements = document.querySelectorAll(selector);
-            elements.forEach(function (ele) {
-                ele.setAttribute('style', property + ':' + value);
-            });
-            for (let i = 0; i < css.length; i++) {
-                if (css[i].selectorText === selector) {
-                    css[i].json[property] = value;
-                    updateRule(css[i]);
-                    break;
+            typing = true;
+            setTimeout(function () {
+                typing = false;
+                if (!typing) {
+                    let property = ev.target.getAttribute('property');
+                    let value = ev.target.value;
+                    let selector = ev.target.getAttribute('selector');
+                    for (let i = 0; i < css.length; i++) {
+                        if (css[i].selectorText === selector) {
+                            css[i].json[property] = value;
+                            updateRule(css[i]);
+                            break;
+                        }
+                    }
                 }
-            }
+            }, 800);
         });
     });
 }
@@ -72,7 +74,16 @@ function updateRule(cssObject) {
         headers: new Headers({
             'Content-Type': 'application/json'
         })
-    });
+    }).then(res => res.json())
+        .catch(error => console.error('Error:', error))
+        .then(response => {
+            let stylesheets = document.querySelectorAll('link');
+            for (let i = 0; i < stylesheets.length; i++) {
+                if (stylesheets[i].getAttribute('href').indexOf(response.filePath) > -1) {
+                    stylesheets[i].setAttribute('href', stylesheets[i].baseURI + response.filePath + '?' + Date.now());
+                }
+            }
+        });
 }
 
 function rgbToHex(rgb) {
