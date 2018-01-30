@@ -1,0 +1,118 @@
+/* Styling for the Vizzy interface itself */
+
+#vizzy h1,
+#vizzy h2,
+#vizzy h3,
+#vizzy h4,
+#vizzy h6,
+#vizzy h6 {
+    color: black;
+    font-weight: bold;
+    margin: 0;
+    font-family: 'Arial Narrow', sans-serif;
+}
+
+#vizzy p {
+    font-weight: normal;
+    font-size: 16px;
+    color: black;
+    margin: 0;
+    font-family: 'Arial Narrow', sans-serif;
+}
+
+#vizzy {
+    opacity: .95;
+    position: fixed;
+    z-index: 99999;
+    background-color: lightgray;
+    -webkit-box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
+    box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
+    padding: 10px 30px 10px 10px;
+    border-radius: 5px;
+    border: solid 1px black;
+    margin: 0 10px 10px 10px;
+    color: black;
+}
+
+#vizzy h1 {
+    font-size: 30px;
+}
+
+#vizzy h2 {
+    font-size: 20px;
+    margin: 10px 0 0 0;
+    color: blue;
+}
+
+#vizzy input {
+    padding: 0 0 0 5px;
+    height: 20px;
+    width: auto;
+    font-size: 12px;
+    background-color: white;
+    border: solid black 1px;
+}
+
+#vizzy input:disabled {
+    background-color: lightgray;
+}
+
+#vizzy button#vizzy-close {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    border-radius: 5px;
+    background-color: black;
+    color: white;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+
+#vizzy .row {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
+}
+
+#vizzy .column {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+}
+
+#vizzy .space-between {
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+}
+
+#vizzy .center-y {
+    -ms-flex-item-align: center;
+    align-self: center;
+}
+
+#vizzy .center {
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+}
+
+#vizzy .end {
+    -webkit-box-pack: end;
+    -ms-flex-pack: end;
+    justify-content: flex-end;
+}
+
+#vizzy p {
+    margin: 0 20px 0 0;
+}

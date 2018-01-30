@@ -1,0 +1,37 @@
+{
+    "manifest_version": 2,
+    "name": "Vizzy",
+    "description": "This extension allows the user edit CSS rules of elements on the page by right-clicking, and save the results to a specified CSS file.",
+    "version": "1.0",
+    "browser_action": {
+        "default_icon": "vizzy_icon_on.png",
+        "default_title": "Disable Vizzy"
+    },
+    "background": {
+        "scripts": [
+            "bg.js"
+        ]
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "*://*/*"
+            ],
+            "css": [
+                "vizzy.css"
+            ],
+            "js": [
+                "vizzy.js"
+            ]
+        }
+    ],
+    "icons": {
+        "64": "vizzy_icon_on.png"
+    },
+    "permissions": [
+        "activeTab",
+        "contextMenus",
+        "tabs",
+        "*://*/*"
+    ]
+}

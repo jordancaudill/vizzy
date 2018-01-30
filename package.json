@@ -1,0 +1,26 @@
+{
+  "name": "vizzy",
+  "version": "1.0.0",
+  "description": "vizzy",
+  "main": "index.js",
+  "scripts": {
+    "demo": "nodemon demo/index.js",
+    "dev": "cross-env NODE_ENV=dev npm-run-all --parallel demo dev-server",
+    "dev-server": "nodemon server.js",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jordancaudill/vizzy.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jordancaudill/vizzy/issues"
+  },
+  "homepage": "https://github.com/jordancaudill/vizzy#readme",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2"
+  }
+}
