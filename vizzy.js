@@ -29,7 +29,7 @@ function openVizzy(el) {
         let textboxes = '<h2>' + rule.selectorText + '</h2>';
         for (let property in rule.json) {
             if (rule.json.hasOwnProperty(property)) {
-                textboxes += '<div class="row space-between"><p>' + property + ':</p><input class="vizzy-input" property="' + property + '" type="text" ' + (computedStyles[property] === rule.json[property] ? '' : 'disabled') + ' value="' + rule.json[property] + '"></div>';
+                textboxes += '<div class="row space-between"><p>' + property + ':</p><input class="vizzy-input" selector="' + rule.selectorText + '" property="' + property + '" type="text" ' + (computedStyles[property] === rule.json[property] ? '' : 'disabled') + ' value="' + rule.json[property] + '"></div>';
             }
         }
         test += textboxes;
@@ -43,32 +43,36 @@ function openVizzy(el) {
     let inputs = document.querySelectorAll('.vizzy-input');
     inputs.forEach(function (input) {
         input.addEventListener('keyup', function (ev) {
-            let ele = document.querySelector('#vizzy').parentElement;
-            ele.setAttribute('style', ev.target.getAttribute('property') + ':' + ev.target.value);
-            updateCSS(css);
+            let property = ev.target.getAttribute('property');
+            let value = ev.target.value;
+            let selector = ev.target.getAttribute('selector');
+            let elements = document.querySelectorAll(selector);
+            elements.forEach(function (ele) {
+                ele.setAttribute('style', property + ':' + value);
+            });
+            for (let i = 0; i < css.length; i++) {
+                if (css[i].selectorText === selector) {
+                    css[i].json[property] = value;
+                    updateRule(css[i]);
+                    break;
+                }
+            }
         });
     });
 }
 
-function updateCSS(css) {
-    let rules = [];
-    css.forEach(function (rule) {
-        rules.push({
-            selector: rule.selectorText,
-            values: rule.json
-        });
-    });
-    //actually, i probably only need to send the rule or property that has changed?
+function updateRule(cssObject) {
+    let rule = {
+        selector: cssObject.selectorText,
+        values: cssObject.json
+    };
     fetch('http://localhost:35872/', {
         method: 'POST',
-        body: JSON.stringify({ rules: rules }),
+        body: JSON.stringify(rule),
         headers: new Headers({
             'Content-Type': 'application/json'
         })
-    }).then(res => res.json())
-        .catch(error => console.error('Error:', error))
-        .then(response => console.log('Success:', response));
-
+    });
 }
 
 function rgbToHex(rgb) {
