@@ -4,7 +4,7 @@
 
 First:
 
-Use 'npm run setup'
+Use `npm run setup`
 
 Then either:
 
@@ -14,4 +14,4 @@ OR
 
 Include vizzy.js and vizzy.css in demo/index.html
 
-You can then run the development environment using 'npm run dev'. By default, the demo webpage is hosted on localhost:80
+You can then run the development environment using `npm run dev`. By default, the demo webpage is hosted on localhost:80
