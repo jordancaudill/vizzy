@@ -19,26 +19,79 @@ function vizzyContextMenu(ev) {
     return false;
 };
 
+function pairwise(a, min = 1) {
+    var fn = function (n, src, got, all) {
+        if (n == 0) {
+            if (got.length > 0) {
+                all[all.length] = got;
+            }
+            return;
+        }
+        for (var j = 0; j < src.length; j++) {
+            fn(n - 1, src.slice(j + 1), got.concat([src[j]]), all);
+        }
+        return;
+    }
+    var all = [];
+    for (var i = min; i < a.length; i++) {
+        fn(i, a, [], all);
+    }
+    all.push(a);
+    return all;
+}
+
+function addProperty (ev) {
+    console.log('woo')
+    ev.preventDefault();
+    return false;
+}
+
 function openVizzy(el) {
     let css = getCSS(el);
+    let elementSelectors = getElementSelectors(el);
+    // let allCombs = pairwise(elementSelectors);
+    // console.log(allCombs)
+    let headerText = elementSelectors.join('');
     let computedStyles = window.getComputedStyle(el);
-    let test = '<h1>' + getElementTitle(el) + '</h1>';
+    let last = '<h1>' + headerText + '</h1>';
+
     for (let r in css) {
         let rule = css[r];
         let textboxes = '<h2>' + rule.selectorText + '</h2>';
+        // let selectors = [];
+        // let parts = rule.selectorText.split(/(\.|\#|\s)/g);
+        // for (i = 0; i < parts.length; i++) {
+        //     let part = parts[i];
+        //     if (part === ' ' || part === '.' || part === '#') {
+        //         selectors.push(part + parts[i + 1]);
+        //         i++;
+        //     } else if (part !== '') {
+        //         selectors.push(part);
+        //     }
+
+        // }
+        
+        // console.log(selectors);
         for (let property in rule.json) {
             if (rule.json.hasOwnProperty(property)) {
                 textboxes += '<div class="row space-between"><p>' + property + ':</p><input class="vizzy-input" selector="' + rule.selectorText + '" property="' + property + '" type="text" ' + (computedStyles[property] === rule.json[property] ? '' : 'disabled') + ' value="' + rule.json[property] + '"></div>';
             }
         }
-        test += textboxes;
+        last += textboxes;
+        last += '<form submit="addProperty()" class="row"><input type="text" class="vizzy-new-prop"><button class="vizzy-add-prop">+</button></form>';
     }
-    let newMenu = createElementFromHTML('<div id="vizzy"><h6>' + test + '</h6> <button id="vizzy-close">X</button></div>');
+    let newMenu = createElementFromHTML('<div id="vizzy"><h6>' + last + '</h6><button id="vizzy-close">X</button></div>');
     el.appendChild(newMenu);
     let closeButton = document.querySelector('#vizzy-close');
     if (closeButton) {
         closeButton.addEventListener('mousedown', closeVizzy);
     }
+    let addBtns = document.querySelectorAll('.vizzy-add-prop');
+    addBtns.forEach(function (btn) {
+        btn.addEventListener('mousedown', function (ev) {
+            console.log(ev)
+        });
+    });
     let inputs = document.querySelectorAll('.vizzy-input');
     let typing = false;
     inputs.forEach(function (input) {
@@ -86,23 +139,19 @@ function updateRule(cssObject) {
         });
 }
 
-function rgbToHex(rgb) {
-    rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
-    return (rgb && rgb.length === 4) ? "#" +
-        ("0" + parseInt(rgb[1], 10).toString(16)).slice(-2) +
-        ("0" + parseInt(rgb[2], 10).toString(16)).slice(-2) +
-        ("0" + parseInt(rgb[3], 10).toString(16)).slice(-2) : '';
-}
-
-function getElementTitle(el) {
-    let elementTitle = el.nodeName.toLowerCase();
+function getElementSelectors(el) {
+    let ret = [];
+    ret.push(el.nodeName.toLowerCase());
     if (el.id) {
-        elementTitle += ('#' + el.id);
+        ret.push('#' + el.id);
     }
     if (el.className.length > 0) {
-        elementTitle += ('.' + el.className.replace(/\s/g, '.'));
+        let classes = el.className.split(' ');
+        for (var i = 0; i < classes.length; i++) {
+            ret.push('.' + classes[i]);
+        }
     }
-    return elementTitle;
+    return ret;
 }
 
 function closeVizzy() {
