@@ -1,6 +1,6 @@
 # Vizzy: A click-and-style CSS development tool.
 
-## Dev Installation (for working on Vizzy itself)
+### Dev Installation (for working on Vizzy itself)
 
 First:
 
