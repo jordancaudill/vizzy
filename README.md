@@ -8,7 +8,7 @@ Use `npm run setup`
 
 Then either:
 
-Using Chrome, go to chrome://extensions, enable developer mode, and load the vizzy repo using the "Load unpacked extension" button.
+Using Chrome, go to chrome://extensions, enable developer mode, and load the Vizzy repo folder using the "Load unpacked extension" button.
 
 OR
 
