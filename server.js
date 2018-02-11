@@ -14,6 +14,7 @@ function vizzy() {
     app.use(bodyParser.text());
     app.use(bodyParser.json({ type: 'application/json' }));
     app.post('/', function (req, res) {
+        cssString = cssString.replace(/\s/g, '').replace(/\r/g, '');
         let start = cssString.indexOf(req.body.selector + '{');
         let end = cssString.indexOf('}', start);
         let newRule = req.body.selector + JSON.stringify(req.body.values).replace(/\,/g, ';').replace(/\"/g, '');
@@ -21,6 +22,7 @@ function vizzy() {
         fs.writeFile(__dirname + '/demo/main.css', cssString, function (err) {
             if (!err) {
                 console.log('Vizzy CSS Updated!')
+                console.log('Vizzy - CSS for rule "' + req.body.selector + '" updated!')
                 res.status(200).send({ filePath: 'main.css' });
             } else {
                 throw err;
