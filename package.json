@@ -7,7 +7,7 @@
     "demo": "nodemon demo/index.js",
     "dev": "cross-env NODE_ENV=dev npm-run-all --parallel demo dev-server",
     "dev-server": "nodemon server.js",
-    "setup": "npm install",
+    "setup": "npm install && npm install cross-env nodemon npm-run-all -g",
     "start": "node server.js"
   },
   "repository": {
