@@ -1,7 +1,7 @@
 window.oncontextmenu = vizzyContextMenu;
 
 if (chrome && chrome.runtime) {
-    chrome.runtime.onMessage.addListener(function (enabled) {
+    chrome.runtime.onMessage.addListener(function(enabled) {
         if (enabled) {
             window.oncontextmenu = vizzyContextMenu;
         } else {
@@ -19,12 +19,6 @@ function vizzyContextMenu(ev) {
     return false;
 };
 
-function addProperty (ev) {
-    console.log('woo')
-    ev.preventDefault();
-    return false;
-}
-
 function openVizzy(el) {
     let css = getCSS(el);
     let elementSelectors = getElementSelectors(el);
@@ -35,32 +29,39 @@ function openVizzy(el) {
     for (let r in css) {
         let rule = css[r];
         let textboxes = '<h2>' + rule.selectorText + '</h2>';
-        for (let property in rule.json) {
-            if (rule.json.hasOwnProperty(property)) {
-                textboxes += '<div class="row space-between"><p>' + property + ':</p><input class="vizzy-input" selector="' + rule.selectorText + '" property="' + property + '" type="text" ' + (computedStyles[property] === rule.json[property] ? '' : 'disabled') + ' value="' + rule.json[property] + '"></div>';
-            }
-        }
+        console.log(rule)
+        let cssForInput = rule.cssText.replace(rule.selectorText + ' { ', '');
+        cssForInput = cssForInput.replace(/;+\s/g, ';\n');
+        cssForInput = cssForInput.replace('}', '');
+        console.log(Object.keys(rule.json).length)
+        textboxes += '<textarea class="vizzy-input" style="height: ' + ((Object.keys(rule.json).length + 1) * 20) + 'px" selector="' + rule.selectorText + '">' + cssForInput + '</textarea>';
+        // for (let property in rule.json) {
+        //     if (rule.json.hasOwnProperty(property)) {
+        //         textboxes += '<div class="row space-between"><p>' + property + ':</p><input class="vizzy-input" selector="' + rule.selectorText + '" property="' + property + '" type="text" ' + (computedStyles[property] === rule.json[property] ? '' : 'disabled') + ' value="' + rule.json[property] + '"></div>';
+        //     }
+        // }
         last += textboxes;
-        last += '<form submit="addProperty()" class="row"><input type="text" class="vizzy-new-prop"><button class="vizzy-add-prop">+</button></form>';
     }
-    let newMenu = createElementFromHTML('<div id="vizzy"><h6>' + last + '</h6><button id="vizzy-close">X</button></div>');
+    last += '<form target="hiddenFrame" class="row vizzy-new-prop-form"><input type="text" class="vizzy-new-prop"><button type="submit" class="vizzy-add-prop">+</button></form>';
+    let newMenu = createElementFromHTML('<div id="vizzy"><iframe id="hiddenFrame" name="hiddenFrame"></iframe><h6>' + last + '</h6><button id="vizzy-close">X</button></div>');
     el.appendChild(newMenu);
     let closeButton = document.querySelector('#vizzy-close');
     if (closeButton) {
         closeButton.addEventListener('mousedown', closeVizzy);
     }
-    let addBtns = document.querySelectorAll('.vizzy-add-prop');
-    addBtns.forEach(function (btn) {
-        btn.addEventListener('mousedown', function (ev) {
-            console.log(ev)
+    let newPropForms = document.querySelectorAll('.vizzy-new-prop-form');
+    newPropForms.forEach(function(form) {
+        form.addEventListener('submit', function(ev) {
+            let thisForm = ev.target;
+            console.log(thisForm.parentElement)
         });
     });
     let inputs = document.querySelectorAll('.vizzy-input');
     let typing = false;
-    inputs.forEach(function (input) {
-        input.addEventListener('keyup', function (ev) {
+    inputs.forEach(function(input) {
+        input.addEventListener('keyup', function(ev) {
             typing = true;
-            setTimeout(function () {
+            setTimeout(function() {
                 typing = false;
                 if (!typing) {
                     let property = ev.target.getAttribute('property');
@@ -85,12 +86,12 @@ function updateRule(cssObject) {
         values: cssObject.json
     };
     fetch('http://localhost:35872/', {
-        method: 'POST',
-        body: JSON.stringify(rule),
-        headers: new Headers({
-            'Content-Type': 'application/json'
-        })
-    }).then(res => res.json())
+            method: 'POST',
+            body: JSON.stringify(rule),
+            headers: new Headers({
+                'Content-Type': 'application/json'
+            })
+        }).then(res => res.json())
         .catch(error => console.error('Error:', error))
         .then(response => {
             let stylesheets = document.querySelectorAll('link');
@@ -132,9 +133,10 @@ function createElementFromHTML(htmlString) {
 }
 
 function getCSS(el) {
-    let sheets = document.styleSheets, ret = [];
-    el.matches = el.matches || el.webkitMatchesSelector || el.mozMatchesSelector
-        || el.msMatchesSelector || el.oMatchesSelector;
+    let sheets = document.styleSheets,
+        ret = [];
+    el.matches = el.matches || el.webkitMatchesSelector || el.mozMatchesSelector ||
+        el.msMatchesSelector || el.oMatchesSelector;
     for (let i in sheets) {
         let rules = sheets[i].rules || sheets[i].cssRules;
         for (let r in rules) {
