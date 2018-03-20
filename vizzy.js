@@ -29,11 +29,9 @@ function openVizzy(el) {
     for (let r in css) {
         let rule = css[r];
         let textboxes = '<h2>' + rule.selectorText + '</h2>';
-        console.log(rule)
         let cssForInput = rule.cssText.replace(rule.selectorText + ' { ', '');
         cssForInput = cssForInput.replace(/;+\s/g, ';\n');
         cssForInput = cssForInput.replace('}', '');
-        console.log(Object.keys(rule.json).length)
         textboxes += '<textarea class="vizzy-input" style="height: ' + ((Object.keys(rule.json).length + 1) * 20) + 'px" selector="' + rule.selectorText + '">' + cssForInput + '</textarea>';
         // for (let property in rule.json) {
         //     if (rule.json.hasOwnProperty(property)) {
@@ -64,13 +62,11 @@ function openVizzy(el) {
             setTimeout(function() {
                 typing = false;
                 if (!typing) {
-                    let property = ev.target.getAttribute('property');
                     let value = ev.target.value;
                     let selector = ev.target.getAttribute('selector');
                     for (let i = 0; i < css.length; i++) {
                         if (css[i].selectorText === selector) {
-                            css[i].json[property] = value;
-                            updateRule(css[i]);
+                            updateRule(selector, value);
                             break;
                         }
                     }
@@ -80,10 +76,10 @@ function openVizzy(el) {
     });
 }
 
-function updateRule(cssObject) {
+function updateRule(selector, value) {
     let rule = {
-        selector: cssObject.selectorText,
-        values: cssObject.json
+        selector: selector,
+        values: value
     };
     fetch('http://localhost:35872/', {
             method: 'POST',

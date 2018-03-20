@@ -15,13 +15,13 @@ function vizzy() {
     app.use(bodyParser.json({ type: 'application/json' }));
     app.post('/', function (req, res) {
         cssString = cssString.replace(/\s/g, '').replace(/\r/g, '');
+        let value = JSON.stringify(req.body.values).replace(/\\n/g, '').replace(/\"/g, '').replace(/\s/g, '');
         let start = cssString.indexOf(req.body.selector + '{');
         let end = cssString.indexOf('}', start);
-        let newRule = req.body.selector + JSON.stringify(req.body.values).replace(/\,/g, ';').replace(/\"/g, '');
+        let newRule = req.body.selector + '{' + value + '}';
         cssString = cssString.slice(0, start) + newRule + cssString.slice(end + 1, cssString.length);
         fs.writeFile(__dirname + '/demo/main.css', cssString, function (err) {
             if (!err) {
-                console.log('Vizzy CSS Updated!')
                 console.log('Vizzy - CSS for rule "' + req.body.selector + '" updated!')
                 res.status(200).send({ filePath: 'main.css' });
             } else {

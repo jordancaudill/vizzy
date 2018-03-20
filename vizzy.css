@@ -36,16 +36,16 @@
     border: solid 1px black;
     margin: 0 10px 10px 10px;
     color: black;
-    max-width: 320px;
+    max-width: 240px;
     max-height: 400px;
 }
 
 #vizzy h1 {
-    font-size: 30px;
+    font-size: 20px;
 }
 
 #vizzy h2 {
-    font-size: 20px;
+    font-size: 16px;
     margin: 10px 0 0 0;
     color: blue;
 }
@@ -53,7 +53,7 @@
 #vizzy .vizzy-input {
     padding: 5px 0 0 5px;
     width: 100%;
-    font-size: 12px;
+    font-size: 14px;
     resize: vertical;
     background-color: white;
     border: solid black 1px;
